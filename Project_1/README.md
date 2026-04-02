@@ -246,8 +246,8 @@ cd order-service
 {
   "name": "string",
   "description": "string",
-  "price": 100.0,
-  "stock": 10
+  "price": Double,
+  "stock": Integer
 }
 ```
 
@@ -255,11 +255,11 @@ cd order-service
 
 ```json
 {
-  "id": 1,
+  "id": Long,
   "name": "string",
   "description": "string",
-  "price": 100.0,
-  "stock": 10
+  "price": Double,
+  "stock": Integer
 }
 ```
 
@@ -284,7 +284,7 @@ cd order-service
 
 ```json
 {
-  "id": "Long",
+  "id": Long,
   "name": "string",
   "description": "string",
   "price": Double,
