@@ -8,13 +8,10 @@ import com.microservice.productservice.exception.BadRequestException;
 import com.microservice.productservice.exception.NotFoundException;
 import com.microservice.productservice.repository.ProductRepository;
 import com.microservice.productservice.service.abstractions.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {

@@ -52,7 +52,7 @@ public class JWTTokenFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
                                 null,
-                                userDetails.getAuthorities()  // ✅ roles from getAuthorities()
+                                userDetails.getAuthorities()  //  roles from getAuthorities()
                         );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);

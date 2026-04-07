@@ -3,11 +3,8 @@ package com.microservice.orderservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 @Entity
 @Table(name = "order_items")

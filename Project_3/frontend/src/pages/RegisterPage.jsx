@@ -1,149 +1,119 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import toast from 'react-hot-toast';
+// src/pages/RegisterPage.jsx
+// Sends { name, email, password } — matches your RegistrationRequest DTO
+import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import toast from 'react-hot-toast'
 
 export default function RegisterPage() {
-    const { register } = useAuth();
-    const navigate     = useNavigate();
+  const { register } = useAuth()
+  const navigate     = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const [form, setForm] = useState({ name: '', email: '', password: '' })
 
-    // ✅ single "name" field — matches backend User entity
-    const [form, setForm] = useState({
-        name:     '',
-        email:    '',
-        password: '',
-    });
-    const [loading, setLoading] = useState(false);
+  const handleChange = (e) =>
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    try {
+      const data = await register(form)
+      toast.success(`Welcome, ${data.name}!`)
+      // Navigate immediately - AuthContext writes to localStorage synchronously
+      navigate('/', { replace: true })
+    } catch (err) {
+      console.error('Register error:', err)
+      toast.error(err.response?.data?.message || 'Registration failed')
+    } finally {
+      setLoading(false)
+    }
+  }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            const data = await register(form);
-            // ✅ data.name works because LoginResponse has "name"
-            toast.success(`Welcome, ${data.name}!`);
-            navigate('/');
-        } catch (err) {
-            toast.error(err.response?.data?.message || 'Registration failed');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (
-        <div style={styles.container}>
-            <div style={styles.card}>
-                <h2 style={styles.title}>Create Account</h2>
-
-                <form onSubmit={handleSubmit} style={styles.form}>
-
-                    {/* ✅ single name field — backend has name, not firstName/lastName */}
-                    <div style={styles.field}>
-                        <label style={styles.label}>Full Name</label>
-                        <input
-                            style={styles.input}
-                            name="name"
-                            placeholder="Your full name"
-                            required
-                            value={form.name}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div style={styles.field}>
-                        <label style={styles.label}>Email</label>
-                        <input
-                            style={styles.input}
-                            type="email"
-                            name="email"
-                            placeholder="you@example.com"
-                            required
-                            value={form.email}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div style={styles.field}>
-                        <label style={styles.label}>Password</label>
-                        <input
-                            style={styles.input}
-                            type="password"
-                            name="password"
-                            placeholder="Minimum 6 characters"
-                            required
-                            minLength={6}
-                            value={form.password}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        style={{ ...styles.button, opacity: loading ? 0.7 : 1 }}
-                    >
-                        {loading ? 'Creating account...' : 'Register'}
-                    </button>
-                </form>
-
-                <p style={styles.footer}>
-                    Already have an account?{' '}
-                    <Link to="/login" style={styles.link}>Login</Link>
-                </p>
-            </div>
+  return (
+    <div style={s.page}>
+      <div style={s.card}>
+        <div style={s.header}>
+          <h2 style={s.title}>Create Account</h2>
+          <p style={s.subtitle}>Join us today — it's free</p>
         </div>
-    );
+
+        <form onSubmit={handleSubmit} style={s.form} noValidate>
+          <div style={s.field}>
+            <label htmlFor="reg-name" style={s.label}>Full Name</label>
+            <input
+              id="reg-name"
+              name="name"
+              type="text"
+              autoComplete="name"
+              placeholder="Your full name"
+              required
+              value={form.name}
+              onChange={handleChange}
+              style={s.input}
+            />
+          </div>
+
+          <div style={s.field}>
+            <label htmlFor="reg-email" style={s.label}>Email</label>
+            <input
+              id="reg-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              required
+              value={form.email}
+              onChange={handleChange}
+              style={s.input}
+            />
+          </div>
+
+          <div style={s.field}>
+            <label htmlFor="reg-password" style={s.label}>Password</label>
+            <input
+              id="reg-password"
+              name="password"
+              type="password"
+              autoComplete="new-password"
+              placeholder="Minimum 6 characters"
+              required
+              minLength={6}
+              value={form.password}
+              onChange={handleChange}
+              style={s.input}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            style={{ ...s.btn, opacity: loading ? 0.75 : 1 }}
+          >
+            {loading ? 'Creating account…' : 'Create Account'}
+          </button>
+        </form>
+
+        <p style={s.footer}>
+          Already have an account?{' '}
+          <Link to="/login" style={s.link}>Sign in</Link>
+        </p>
+      </div>
+    </div>
+  )
 }
 
-const styles = {
-    container: {
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: '#f0f2f5',
-    },
-    card: {
-        background: '#fff',
-        borderRadius: 12,
-        padding: '40px 36px',
-        width: '100%',
-        maxWidth: 420,
-        boxShadow: '0 2px 16px rgba(0,0,0,0.10)',
-    },
-    title: {
-        margin: '0 0 28px',
-        fontSize: 24,
-        fontWeight: 600,
-        color: '#1a1a2e',
-    },
-    form:  { display: 'flex', flexDirection: 'column', gap: 16 },
-    field: { display: 'flex', flexDirection: 'column', gap: 6 },
-    label: { fontSize: 13, fontWeight: 500, color: '#555' },
-    input: {
-        padding: '10px 14px',
-        borderRadius: 8,
-        border: '1.5px solid #ddd',
-        fontSize: 14,
-        outline: 'none',
-        transition: 'border-color 0.2s',
-    },
-    button: {
-        marginTop: 8,
-        padding: '12px',
-        borderRadius: 8,
-        border: 'none',
-        background: '#1565C0',
-        color: '#fff',
-        fontSize: 15,
-        fontWeight: 600,
-        cursor: 'pointer',
-        transition: 'opacity 0.2s',
-    },
-    footer: { marginTop: 20, textAlign: 'center', fontSize: 14, color: '#666' },
-    link:   { color: '#1565C0', fontWeight: 500, textDecoration: 'none' },
-};
+const s = {
+  page:     { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#EFF3FB', padding: 16 },
+  card:     { background: '#fff', borderRadius: 14, padding: '40px 36px', width: '100%', maxWidth: 420, boxShadow: '0 4px 24px rgba(21,101,192,0.10)' },
+  header:   { marginBottom: 28 },
+  title:    { margin: 0, fontSize: 26, fontWeight: 700, color: '#0D47A1' },
+  subtitle: { margin: '6px 0 0', fontSize: 14, color: '#888' },
+  form:     { display: 'flex', flexDirection: 'column', gap: 16 },
+  field:    { display: 'flex', flexDirection: 'column', gap: 6 },
+  label:    { fontSize: 13, fontWeight: 600, color: '#444' },
+  input:    { padding: '11px 14px', borderRadius: 8, border: '1.5px solid #D0D7E3', fontSize: 14, outline: 'none', transition: 'border-color 0.2s', color: '#222' },
+  btn:      { marginTop: 8, padding: '13px', borderRadius: 8, border: 'none', background: '#1565C0', color: '#fff', fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'opacity 0.2s' },
+  footer:   { marginTop: 22, textAlign: 'center', fontSize: 14, color: '#777' },
+  link:     { color: '#1565C0', fontWeight: 600, textDecoration: 'none' },
+}
