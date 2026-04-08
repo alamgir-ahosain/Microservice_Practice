@@ -1,0 +1,20 @@
+package com.microservice.orderservice.dto.request;
+
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+public class PlaceOrderRequest {
+
+    @NotBlank(message = "Shipping address is required")
+    private String shippingAddress;
+
+    @NotEmpty(message = "Order must have at least one item")
+    @Valid  // triggers validation on each OrderItemRequest inside the list
+    private List<OrderItemRequest> items;
+}
