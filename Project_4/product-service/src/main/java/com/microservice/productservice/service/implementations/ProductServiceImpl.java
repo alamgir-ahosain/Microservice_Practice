@@ -46,7 +46,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse createProduct(CreateProductRequest request,String adminId) {
 
-       boolean existsProductsByName= productRepository.existsByName(request.getName());
+    //    boolean existsProductsByName= productRepository.existsByName(request.getName());
+       boolean existsProductsByName = productRepository.existsByNameAndActiveTrue(request.getName());
+
        if (existsProductsByName) throw new BadRequestException("Product "+request.getName()+" already exists!");
 
        Product newProduct= new Product();

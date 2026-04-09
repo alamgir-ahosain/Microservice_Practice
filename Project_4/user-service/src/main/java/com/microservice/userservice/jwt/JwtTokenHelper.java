@@ -5,6 +5,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,27 +26,46 @@ public class JwtTokenHelper {
     private String SECRET_KEY;
 
     @Value("${jwt.expiration}")
-    private long TOKEN_EXPIRY_DURATION; 
+    private long TOKEN_EXPIRY_DURATION;
+
+    @PostConstruct
+    public void init() {
+        logger.info("JwtTokenHelper: SECRET_KEY loaded = {}",
+                SECRET_KEY != null ? "YES (length=" + SECRET_KEY.length() + ")" : "NULL");
+        logger.info("JwtTokenHelper: TOKEN_EXPIRY_DURATION = {}", TOKEN_EXPIRY_DURATION);
+    }
 
     public SecretKey getSecretKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY); // throws if invalid Base64
+        if (keyBytes.length < 32) {
+            throw new IllegalStateException("JWT secret must be at least 256 bits (32 bytes)");
+        }
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-   // Create JWT Token
+    // Create JWT Token
     public String createToken(User user) {
-        Map<String, Object> extraClaims = new HashMap<>();
-        extraClaims.put("role",    user.getRole().name());   // "USER" or "ADMIN"
-        extraClaims.put("userId",  user.getId());
-        extraClaims.put("name",    user.getName());
+        logger.info("JwtTokenHelper: Creating token for user = {}", user.getEmail());
+        try {
+            Map<String, Object> extraClaims = new HashMap<>();
+            extraClaims.put("role", user.getRole().name());
+            extraClaims.put("userId", user.getId());
+            extraClaims.put("name", user.getName());
 
-        return Jwts.builder()
-                .claims(extraClaims)
-                .subject(user.getEmail())          // email as subject (used for loadUserByUsername)
-                .issuedAt(new Date(System.currentTimeMillis())) // Creation time
-                .expiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRY_DURATION)) // Expire time
-                .signWith(getSecretKey()) // "alg": "HS256", "typ": "JWT" auto-set //! JJWT automatically sets `"alg": "HS256"` when using an HMAC key.It also adds `"typ": "JWT"` to mark the  token as a JSON Web Token.
-                .compact();
+            String token = Jwts.builder()
+                    .claims(extraClaims)
+                    .subject(user.getEmail())
+                    .issuedAt(new Date(System.currentTimeMillis()))
+                    .expiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRY_DURATION))
+                    .signWith(getSecretKey())
+                    .compact();
+
+            logger.info("JwtTokenHelper: Token created successfully = {}", token.substring(0, 20));
+            return token;
+        } catch (Exception e) {
+            logger.error("JwtTokenHelper: Failed to create token", e);
+            throw e;
+        }
     }
 
     // extract Username from token claims
@@ -85,5 +106,3 @@ public class JwtTokenHelper {
                 .getPayload();
     }
 }
-
-
