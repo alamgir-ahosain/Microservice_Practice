@@ -6,11 +6,11 @@ import java.util.List;
 
 @Builder
 public record DoctorResponse(
-        Long id,
-        String name,
-        List<String> specialties,
-        String phoneNumber,
-        String email,
-        LocationResponse locationResponse,
-        List<DoctorHospitalResponse> doctorHospitals) {
+                Long id,
+                String name,
+                List<String> specialties,
+                String phoneNumber,
+                String email,
+                LocationResponse locationResponse,
+                List<DoctorHospitalResponse> doctorHospitals) {
 }

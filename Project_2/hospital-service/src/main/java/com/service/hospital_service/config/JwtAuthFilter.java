@@ -13,14 +13,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * KEY DIFFERENCE from auth-service:
- * We do NOT call a database. We build the UserDetails purely
- * from the JWT claims (email + role).
- *
- * This is why JWT is powerful in microservices — self-contained, no DB call
- * needed.
- */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -42,13 +34,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = header.substring(7);
 
         try {
-            if (jwtValidator.isTokenValid(token) &&
-                    SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (jwtValidator.isTokenValid(token) &&SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 String email = jwtValidator.extractEmail(token);
                 String role = jwtValidator.extractRole(token); // e.g. "PATIENT", "DOCTOR"
 
-                // Build UserDetails from token — no DB needed ✅
+                // Build UserDetails from token - no DB needed
                 User userDetails = new User(
                         email, "",
                         List.of(new SimpleGrantedAuthority("ROLE_" + role)));
@@ -59,7 +50,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         } catch (Exception ignored) {
-            // Invalid token — SecurityContext stays empty → Spring returns 403
+            // Invalid token — SecurityContext stays empty , Spring returns 403
         }
 
         chain.doFilter(req, res);

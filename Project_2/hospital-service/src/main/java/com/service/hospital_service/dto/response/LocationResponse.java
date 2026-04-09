@@ -5,12 +5,12 @@ import lombok.Builder;
 
 @Builder
 public record LocationResponse(
-                Long id,
-                LOCATION_TYPE locationType,
-                String address,
-                String thana,
-                String po,
-                String city,
-                Long postalCode,
-                Long zoneId) {
+        Long id,
+        LOCATION_TYPE locationType,
+        String address,
+        String thana,
+        String po,
+        String city,
+        Long postalCode,
+        Long zoneId) {
 }

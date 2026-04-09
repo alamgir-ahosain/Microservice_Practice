@@ -20,8 +20,6 @@ public class DoctorLocation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // FIX: was @JoinColumn(name = "hospital_id") — wrong name, wrong unique
-    // constraint
     @OneToOne
     @JoinColumn(name = "doctor_id", unique = true)
     private Doctor doctor;
@@ -40,10 +38,8 @@ public class DoctorLocation {
 
     private Long postalCode;
 
-    // FIX: removed @NotNull — zoneId is optional from the frontend
     private Long zoneId;
 
-    // FIX: removed @NotNull — locationType is optional (dropdown may be left blank)
     @Enumerated(EnumType.STRING)
     private LOCATION_TYPE locationType;
 }

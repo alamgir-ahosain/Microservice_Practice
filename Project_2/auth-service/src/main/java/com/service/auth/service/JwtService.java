@@ -19,7 +19,7 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
-    // ── Called by AuthService after login/register ──────────────────────
+    //  Called by AuthService after login/register 
     public String generateToken(UserDetails userDetails, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role); // role embedded so hospital-service can read it

@@ -1,16 +1,21 @@
 package com.service.hospital_service.entity;
 
-
 import com.service.hospital_service.entity.doctor.Doctor;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
-@Entity @Table(name = "appointments")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Entity
+@Table(name = "appointments")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Appointment {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -28,5 +33,7 @@ public class Appointment {
 
     private String notes;
 
-    public enum Status { SCHEDULED, COMPLETED, CANCELLED }
+    public enum Status {
+        SCHEDULED, COMPLETED, CANCELLED
+    }
 }

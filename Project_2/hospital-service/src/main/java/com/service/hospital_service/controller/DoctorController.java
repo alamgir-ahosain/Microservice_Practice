@@ -18,7 +18,6 @@ public class DoctorController {
 
     private final DoctorService doctorService;
 
-    // POST /api/doctors → 201
     @PostMapping
     public ResponseEntity<DoctorResponse> create(
             @Valid @RequestBody DoctorRegistrationRequest request) {
@@ -26,19 +25,16 @@ public class DoctorController {
                 .body(doctorService.createDoctor(request));
     }
 
-    // GET /api/doctors → 200 list
     @GetMapping
     public ResponseEntity<List<DoctorResponse>> getAll() {
         return ResponseEntity.ok(doctorService.getAllDoctors());
     }
 
-    // GET /api/doctors/{id} → 200
     @GetMapping("/{id}")
     public ResponseEntity<DoctorResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(doctorService.getDoctorById(id));
     }
 
-    // PUT /api/doctors/{id} → 200
     @PutMapping("/{id}")
     public ResponseEntity<DoctorResponse> update(
             @PathVariable Long id,
@@ -46,7 +42,6 @@ public class DoctorController {
         return ResponseEntity.ok(doctorService.updateDoctor(id, request));
     }
 
-    // DELETE /api/doctors/{id} → 204
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         doctorService.deleteDoctor(id);

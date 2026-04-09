@@ -14,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class DoctorRegistrationRequest {
 
-        // userId is optional — used if you link a doctor to an auth user later
         String userId;
 
         @NotBlank(message = "Doctor name cannot be blank")
@@ -27,7 +26,7 @@ public class DoctorRegistrationRequest {
         String email;
 
         @Valid
-        Location location; // entirely optional — null if no location provided
+        Location location;
 
-        List<DoctorHospitalCreateRequest> doctorHospitals; // optional — empty list = no assignments
+        List<DoctorHospitalCreateRequest> doctorHospitals;
 }

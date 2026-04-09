@@ -1,6 +1,5 @@
 package com.service.auth.config;
 
-
 import com.service.auth.service.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -18,24 +17,29 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtService               jwtService;
+    private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest req,
-                                    @NonNull HttpServletResponse res,
-                                    @NonNull FilterChain chain)
+            @NonNull HttpServletResponse res,
+            @NonNull FilterChain chain)
             throws ServletException, IOException {
 
         String header = req.getHeader("Authorization");
         if (header == null || !header.startsWith("Bearer ")) {
-            chain.doFilter(req, res); return;
+            chain.doFilter(req, res);
+            return;
         }
 
         String token = header.substring(7);
         String email;
-        try { email = jwtService.extractEmail(token); }
-        catch (Exception e) { chain.doFilter(req, res); return; }
+        try {
+            email = jwtService.extractEmail(token);
+        } catch (Exception e) {
+            chain.doFilter(req, res);
+            return;
+        }
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails ud = userDetailsService.loadUserByUsername(email);

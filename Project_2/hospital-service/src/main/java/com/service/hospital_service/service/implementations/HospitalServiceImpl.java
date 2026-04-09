@@ -22,16 +22,15 @@ public class HospitalServiceImpl implements HospitalService {
     private final HospitalRepository hospitalRepository;
     private final HospitalLocationRepository hospitalLocationRepository;
 
-    // ─── CREATE ───────────────────────────────────────────────────────────────
-
+    // CREATE
     @Override
     @Transactional
     public HospitalResponse registerHospital(HospitalRegistrationRequest request) {
         if (hospitalRepository.existsByName(request.getName())) {
             throw new NotFoundException("Hospital already exists with name: " + request.getName());
         }
-
         // Build and save Hospital first (no location yet, avoids transient error)
+
         Hospital newHospital = Hospital.builder()
                 .name(request.getName())
                 .phoneNumber(request.getPhoneNumber())
@@ -51,8 +50,7 @@ public class HospitalServiceImpl implements HospitalService {
         return mapToResponse(newHospital);
     }
 
-    // ─── READ ALL ─────────────────────────────────────────────────────────────
-
+    // READ ALL
     @Override
     public List<HospitalResponse> getAllHospitals() {
         return hospitalRepository.findAll()
@@ -61,8 +59,7 @@ public class HospitalServiceImpl implements HospitalService {
                 .toList();
     }
 
-    // ─── READ ONE ─────────────────────────────────────────────────────────────
-
+    // READ ONE
     @Override
     public HospitalResponse getHospitalById(Long id) {
         Hospital hospital = hospitalRepository.findById(id)
@@ -70,8 +67,7 @@ public class HospitalServiceImpl implements HospitalService {
         return mapToResponse(hospital);
     }
 
-    // ─── UPDATE ───────────────────────────────────────────────────────────────
-
+    // UPDATE
     @Override
     @Transactional
     public HospitalResponse updateHospital(Long id, HospitalRegistrationRequest request) {
@@ -118,8 +114,7 @@ public class HospitalServiceImpl implements HospitalService {
         return mapToResponse(hospital);
     }
 
-    // ─── DELETE ───────────────────────────────────────────────────────────────
-
+    // DELETE
     @Override
     @Transactional
     public void deleteHospital(Long id) {
@@ -130,8 +125,7 @@ public class HospitalServiceImpl implements HospitalService {
         hospitalRepository.delete(hospital);
     }
 
-    // ─── MAPPER ───────────────────────────────────────────────────────────────
-
+    // MAPPER
     private HospitalResponse mapToResponse(Hospital hospital) {
         LocationResponse locationResponse = null;
         if (hospital.getLocation() != null) {

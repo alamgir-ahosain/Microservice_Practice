@@ -68,7 +68,7 @@ app.add_middleware(
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",                  # ← change to this
-    google_api_key=os.getenv("GOOGLE_API_KEY"),
+    google_api_key=os.getenv("GEMINI_API_KEY"),
     # Optional: good defaults for your use-case
     temperature=0.7,
     max_output_tokens=1024,
@@ -198,4 +198,4 @@ async def clear_session(user_id: str):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8085, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8085)

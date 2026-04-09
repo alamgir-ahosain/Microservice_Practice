@@ -31,13 +31,11 @@ public class DoctorServiceImpl implements DoctorService {
         private final DoctorHospitalRepository doctorHospitalRepository;
         private final HospitalRepository hospitalRepository;
 
-        // ─── CREATE ───────────────────────────────────────────────────────────────
-
+        // CREATE
         @Override
         @Transactional
         public DoctorResponse createDoctor(DoctorRegistrationRequest request) {
-                // DoctorRegistrationRequest is a CLASS → use .getName(), .getLocation() etc.
-                // Location is a RECORD → use .address(), .city() etc.
+
                 Doctor doctor = Doctor.builder()
                                 .name(request.getName())
                                 .specialties(request.getSpecialties())
@@ -78,23 +76,20 @@ public class DoctorServiceImpl implements DoctorService {
                 return mapToResponse(doctor);
         }
 
-        // ─── READ ALL ─────────────────────────────────────────────────────────────
-
+        // READ ALL
         @Override
         public List<DoctorResponse> getAllDoctors() {
                 return doctorRepository.findAll().stream().map(this::mapToResponse).toList();
         }
 
-        // ─── READ ONE ─────────────────────────────────────────────────────────────
-
+        // READ ONE
         @Override
         public DoctorResponse getDoctorById(Long id) {
                 return mapToResponse(doctorRepository.findById(id)
                                 .orElseThrow(() -> new NotFoundException("Doctor not found with id: " + id)));
         }
 
-        // ─── UPDATE ───────────────────────────────────────────────────────────────
-
+        // UPDATE
         @Override
         @Transactional
         public DoctorResponse updateDoctor(Long id, DoctorRegistrationRequest request) {
@@ -152,8 +147,7 @@ public class DoctorServiceImpl implements DoctorService {
                 return mapToResponse(doctor);
         }
 
-        // ─── DELETE ───────────────────────────────────────────────────────────────
-
+        // DELETE
         @Override
         @Transactional
         public void deleteDoctor(Long id) {
@@ -161,8 +155,7 @@ public class DoctorServiceImpl implements DoctorService {
                                 .orElseThrow(() -> new NotFoundException("Doctor not found with id: " + id)));
         }
 
-        // ─── MAPPER ───────────────────────────────────────────────────────────────
-
+        // MAPPER
         private DoctorResponse mapToResponse(Doctor doctor) {
                 LocationResponse locationResponse = null;
                 if (doctor.getLocationId() != null) {
