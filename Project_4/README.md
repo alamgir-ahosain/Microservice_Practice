@@ -17,45 +17,9 @@ Each service has its **own dedicated PostgreSQL database**.The `order-service` c
 > **Feature Demonstration Video on YouTube : [Click Here](https://www.youtube.com/watch?v=oeppcZjKc0U)**
 ---
 
-# Run  Project 
-
-Run each service step by step:
-- user-service
-- product-service
-- order-service
-- frontend 
 
 
-### Frontend (Node.js/React)
-```bash
-cd frontend
-npm install
-npm start          # Dev server on localhost:3000
-npm run build      # Production build
-```
-
-### Backend Services (Maven/Spring Boot)
-Each service uses Maven Wrapper. Run the following command from each service root directory:
-
-
-```bash
-cd user-service
-./mvnw spring-boot:run
-
-cd product-service
-./mvnw spring-boot:run
-
-cd order-service
-./mvnw spring-boot:run
-```
-
-
-
-
----
-
-
-## Environment Variables
+## Environment Variables setup
 
 
 ### user-service/.env
@@ -136,6 +100,102 @@ PRODUCT_URL= http://localhost:8083
   - All others require authentication
 - **Product/Order Services**: Permit all requests but rely on header-based auth
 - CORS configured to allow frontend at `http://localhost:3000`
+
+
+---
+
+# Run  & Test 
+
+### 1. Run with Docker
+
+Each backend service uses a **two-stage Maven build**.The frontend uses a **two-stage Node build**.
+
+#### docker-compose.yml
+
+Spins up **7 containers** on a shared `microservices-network`:
+
+| Container | Image | Port |
+|---|---|---|
+| user-db | postgres:16-alpine | 5433 |
+| product-db | postgres:16-alpine | 5435 |
+| order-db | postgres:16-alpine | 5434 |
+| user-service | project build | 8081 |
+| product-service | project build | 8083 |
+| order-service | project build | 8084 |
+| frontend | project build | 3000 |
+
+>  Use container names as hostnames (e.g. `user-db`, `product-service`)  **not** `localhost`  inside `.env` files when running with Docker.
+
+
+```bash
+docker compose up --build # Build images and start all 4 containers
+docker compose up --build -d # Run in background (detached mode)
+docker ps # View running containers
+doker compose logs -f # view longs
+docker-compose logs -f product-service # Follow logs of a specific service
+docker-compose down # Stop all containers
+docker-compose down -v # Stop and delete all volumes (wipes DB data)
+```
+
+#### View Database Records
+
+```bash
+# Connect to any database
+docker exec -it user-db    psql -U postgres -d user_db
+docker exec -it product-db psql -U postgres -d product_db
+docker exec -it order-db   psql -U postgres -d order_db
+# Example: list all users
+docker exec -it user-db psql -U postgres -d user_db -c "SELECT * FROM users;"
+```
+
+
+
+### 2. Run Locally (without Docker)
+
+Run each service step by step:
+- user-service
+- product-service
+- order-service
+- frontend 
+
+
+####  Frontend (Node.js/React)
+```bash
+cd frontend
+npm install
+npm start          # Dev server on localhost:3000
+npm run build      # Production build
+```
+
+#### Backend Services (Maven/Spring Boot)
+Each service uses Maven Wrapper. Run the following command from each service root directory:
+
+
+```bash
+cd user-service
+./mvnw spring-boot:run
+
+cd product-service
+./mvnw spring-boot:run
+
+cd order-service
+./mvnw spring-boot:run
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
