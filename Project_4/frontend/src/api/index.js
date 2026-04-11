@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const USER_BASE = 'http://localhost:8081';
-const PRODUCT_BASE = 'http://localhost:8083';
-const ORDER_BASE = 'http://localhost:8084';
+const USER_BASE = 'https://user-service-nfg0.onrender.com';
+const PRODUCT_BASE = 'https://product-service-ihql.onrender.com';
+const ORDER_BASE = 'https://order-service-wmwh.onrender.com';
 
 // ─── Auth ────────────────────────────────────────────────────────────────────
 export const register = (data) =>
